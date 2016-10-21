@@ -33,8 +33,9 @@ class gperftoolsConan(ConanFile):
 #                 old_str = '-install_name $libdir/$SHAREDLIBM'
 #                 new_str = '-install_name $SHAREDLIBM'
 #                 replace_in_file("./%s/configure" % self.ZIP_FOLDER_NAME, old_str, new_str)
-#
-            self.run("cd %s && %s ./configure" % (self.zipped_folder, env_line))          
+#    
+            print(env_line)
+            self.run("cd %s && %s ./configure --with-pic" % (self.zipped_folder, env_line))          
             self.run("cd %s && %s make" % (self.zipped_folder, env_line))
 
     def package(self):
