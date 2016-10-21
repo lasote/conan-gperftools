@@ -1,0 +1,26 @@
+os: linux
+services:
+   - docker
+sudo: required
+language: python
+env:
+  global:
+    - CONAN_UPLOAD=1
+    - CONAN_REFERENCE="gperftools/2.5"
+    - CONAN_USERNAME="lasote"
+    - CONAN_CHANNEL="testing"
+    - CONAN_TOTAL_PAGES=1
+    - CONAN_STABLE_BRANCH_PATTERN="release/*"
+    - CONAN_USE_DOCKER=1
+
+  matrix:
+    - CONAN_GCC_VERSIONS=4.6 CONAN_CURRENT_PAGE=1
+    - CONAN_GCC_VERSIONS=4.8 CONAN_CURRENT_PAGE=1
+    - CONAN_GCC_VERSIONS=4.9 CONAN_CURRENT_PAGE=1
+    - CONAN_GCC_VERSIONS=5.2 CONAN_CURRENT_PAGE=1
+    - CONAN_GCC_VERSIONS=5.3 CONAN_CURRENT_PAGE=1
+
+install:
+  - ./.travis/install.sh
+script:
+  - ./.travis/run.sh
