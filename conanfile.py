@@ -45,7 +45,7 @@ class gperftoolsConan(ConanFile):
            
         if self.options.shared:
             self.copy("*.dll", dst="bin", keep_path=False)
-            self.copy("*.so", dst="lib", keep_path=False)
+            self.copy("*.so*", dst="lib", keep_path=False)
         else:
             self.copy("*.a", dst="lib", keep_path=False)
 
