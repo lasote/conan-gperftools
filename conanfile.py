@@ -19,6 +19,7 @@ class gperftoolsConan(ConanFile):
     def configure(self):
         if self.settings.os != "Linux":
             raise Exception("Only linux compatible")
+        del self.settings.compiler.libcxx
     
     def source(self):
         
