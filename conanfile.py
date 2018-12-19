@@ -1,10 +1,10 @@
-from conans import ConanFile, CMake, tools, ConfigureEnvironment
+from conans import ConanFile, CMake, tools, AutoToolsBuildEnvironment
 import os
 
 
 class gperftoolsConan(ConanFile):
     name = "gperftools"
-    version = "2.5"
+    version = "2.7"
     license = "https://github.com/gperftools/gperftools/blob/master/COPYING"
     url = "https://github.com/lasote/conan-gperftools"
     settings = "os", "compiler", "build_type", "arch"
@@ -21,22 +21,22 @@ class gperftoolsConan(ConanFile):
             raise Exception("Only linux compatible")
     
     def source(self):
-        
-       tools.download("https://github.com/gperftools/gperftools/releases/download/gperftools-2.5/gperftools-%s.tar.gz" % self.version, "gperftools.tar.gz")
+       tools.download("https://github.com/gperftools/gperftools/releases/download/gperftools-%s/gperftools-%s.tar.gz" % (self.version, self.version), "gperftools.tar.gz")
        tools.unzip("gperftools.tar.gz")
 
     def build(self):
         if self.settings.os == "Linux" or self.settings.os == "Macos":
-            env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
-            env_line = env.command_line_env.replace('CFLAGS="', 'CFLAGS="-fPIC ')
+            env = AutoToolsBuildEnvironment(self)
+            env.fpic = True
 #             if self.settings.os == "Macos":
 #                 old_str = '-install_name $libdir/$SHAREDLIBM'
 #                 new_str = '-install_name $SHAREDLIBM'
 #                 replace_in_file("./%s/configure" % self.ZIP_FOLDER_NAME, old_str, new_str)
 #    
-            print(env_line)
-            self.run("cd %s && %s ./configure --with-pic" % (self.zipped_folder, env_line))          
-            self.run("cd %s && %s make" % (self.zipped_folder, env_line))
+            os.chdir(self.zipped_folder)
+            with tools.environment_append(env.vars):
+                self.run("./configure --with-pic")
+                self.run("make")
 
     def package(self):
         self.copy("*.h", dst="include", src="%s/src" % self.zipped_folder, keep_path=True)
